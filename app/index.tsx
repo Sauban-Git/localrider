@@ -7,7 +7,7 @@ const Index = () => {
   const router = useRouter()
 
   useEffect(() => {
-    router.replace('/(auth)/riderlogin')
+    setTimeout(() => { router.replace('/(auth)/riderlogin') }, 500)
   }, [])
 
   return (

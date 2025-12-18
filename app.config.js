@@ -1,4 +1,6 @@
-{
+export default {
+
+
   "expo": {
     "name": "localrider",
     "slug": "localrider",
@@ -38,11 +40,20 @@
             "backgroundColor": "#000000"
           }
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    extra: {
+      EXPO_PUBLIC_API_KEY: process.env.EXPO_PUBLIC_API_KEY,
+      EXPO_PUBLIC_API_BASE_URL: process.env.EXPO_PUBLIC_API_BASE_URL,
+      EXPO_PUBLIC_GOOGLE_MAPS_API_KEY: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY,
+      EXPO_PUBLIC_OLA_MAPS_PROJECT_ID: process.env.EXPO_PUBLIC_OLA_MAPS_PROJECT_ID,
+      EXPO_PUBLIC_OLA_MAPS_API_KEY: process.env.EXPO_PUBLIC_OLA_MAPS_API_KEY,
     }
+
   }
 }
