@@ -1,10 +1,12 @@
 import useOtpVerification from "@/hooks/useOtpVerification"
-import { View, Text, Image, TextInput, TouchableOpacity, ActivityIndicator, ToastAndroid } from "react-native"
+import { View, Text, Image, TextInput, TouchableOpacity, ActivityIndicator } from "react-native"
 import MyButton from "./button";
+import { useRouter } from "expo-router";
 
 const Login = () => {
 
   const otpHook = useOtpVerification();
+  const router = useRouter()
 
   return (
     <View style={{ backgroundColor: "white", justifyContent: "center", padding: 30, borderRadius: 10 }}>
@@ -42,7 +44,7 @@ const Login = () => {
             || otpHook.otpCooldown > 0 ||
             otpHook.otpSendCount >= otpHook.MAX_OTP_REQUESTS
           }
-          onPress={otpHook.handleSendOtp}
+          onPress={otpHook.handleCheckAndSendOtp}
           style={{
             backgroundColor: "#16a34a",
             paddingHorizontal: 14,
@@ -74,7 +76,7 @@ const Login = () => {
         </TouchableOpacity>
       </View>
 
-      {otpHook.otpFeedback && (
+      {otpHook.otpFeedback && otpHook.statusPassed === "verified" && (
         <Text
           style={{
             marginTop: 6,
@@ -91,7 +93,14 @@ const Login = () => {
         </Text>
       )}
 
-      {otpHook.statusPassed === "not_registered" && <MyButton backgroundColor="#50C878" onPress={() => console.log("route to registration")} title="Register" />}
+      {/* #F0FFFF #A7C7E7 */}
+      {(otpHook.statusPassed === "not_registered" || otpHook.statusPassed === "not_verified") &&
+        <View style={{ backgroundColor: "#ADD8E6", borderRadius: 10, borderWidth: 1, borderColor: "#87CEEB", padding: 10, marginVertical: 10 }}>
+          <Text> 📝 {otpHook.statusPassed}</Text>
+          <Text>{otpHook.otpFeedback?.message}</Text>
+          <MyButton backgroundColor="#50C878" onPress={() => router.replace('/(register)/registerRider')} title="Become a Driver" />
+        </View>
+      }
 
       {/* OTP input */}
       {otpHook.otpSent && (
