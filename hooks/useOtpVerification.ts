@@ -88,7 +88,14 @@ export default function useOtpVerification() {
       const res = await api.post("/riders/send-otp", { phoneNumber });
 
       if (res.data?.success) {
-        console.log("hook rider verify: ", res.data)
+        Toast.show({
+          type: "success",
+          text1: "Development build otp ...",
+          text2: res.data.devOtp,
+          position: "top",
+          visibilityTime: 6000
+        })
+
         setOtpSent(true);
         setOtpSendCount((v) => v + 1);
         setOtpCooldown(45);
