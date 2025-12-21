@@ -3,6 +3,7 @@ import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
 import api from "../services/api";
 import Toast from "react-native-toast-message";
+import { ToastAndroid } from "react-native";
 
 export default function useOtpVerification() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -88,6 +89,8 @@ export default function useOtpVerification() {
       const res = await api.post("/riders/send-otp", { phoneNumber });
 
       if (res.data?.success) {
+        console.log(res.data)
+        ToastAndroid.show(`OTP: ${res.data.devOtp}`, ToastAndroid.LONG)
         Toast.show({
           type: "success",
           text1: "Development build otp ...",
@@ -212,7 +215,10 @@ export default function useOtpVerification() {
   // ---------------------------
   // VERIFY OTP
   // ---------------------------
-  const handleVerifyOtp = async () => {
+  //
+  type Context = "application" | null | undefined
+  const handleVerifyOtp = async (context?: Context) => {
+
     if (!otp || otp.length !== 6) {
       setOtpFeedback({
         type: "error",
@@ -224,10 +230,16 @@ export default function useOtpVerification() {
     setIsVerifyingOtp(true);
 
     try {
-      const res = await api.post("/riders/verify-otp", {
+      const payload: Record<string, any> = {
         phoneNumber,
         otp,
-      });
+      };
+
+      if (context === "application") {
+        payload.context = "application";
+      }
+
+      const res = await api.post("/riders/verify-otp", payload)
 
       if (res.data?.success) {
         setIsAuthenticated(true);

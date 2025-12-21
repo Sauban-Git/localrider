@@ -126,7 +126,7 @@ const Login = () => {
 
             <TouchableOpacity
               disabled={!otpHook.otp || otpHook.otp.length !== 6 || otpHook.isVerifyingOtp}
-              onPress={otpHook.handleVerifyOtp}
+              onPress={() => otpHook.handleVerifyOtp()}
               style={{
                 backgroundColor: "#2563eb",
                 paddingHorizontal: 14,

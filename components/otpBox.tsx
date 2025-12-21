@@ -131,7 +131,7 @@ const OtpBox = ({ otpHook }: OtpBoxProps) => {
 
             <TouchableOpacity
               disabled={!otp || otp.length !== 6 || isVerifyingOtp}
-              onPress={handleVerifyOtp}
+              onPress={() => handleVerifyOtp("application")}
               style={{
                 backgroundColor: "#2563eb",
                 paddingHorizontal: 14,
