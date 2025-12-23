@@ -2,7 +2,7 @@
 import React from 'react';
 import { View, Text, Image } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import MyButton from '../button';
+import MyButton from '@/components/button';
 
 export default function Step3Documents({ form, setForm }: any) {
   const pickImage = async (field: string) => {

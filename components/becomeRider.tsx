@@ -4,11 +4,11 @@ import OtpBox from '@/components/otpBox';
 import Step1Personal from '@/components/screens/step1Personal';
 import Step3Documents from '@/components/screens/step2Documents';
 import Step2Vehicle from '@/components/screens/step2Vehicle';
-import api from '@/services/api';
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, ToastAndroid, KeyboardAvoidingView } from 'react-native';
-import StepIndicator from './stepIndicator';
+import StepIndicator from '@/components/stepIndicator';
 import useOtpVerification from '@/hooks/useOtpVerification';
+import api from "@/services/api";
 
 const BecomeRider = () => {
   const [step, setStep] = useState(1);
@@ -25,14 +25,17 @@ const BecomeRider = () => {
     aadhaarCard: null
   });
 
-  const [phoneVerified, setPhoneVerified] = useState(false);
-
   // Call the hook once and monitor authentication state
   const riderOtpHook = useOtpVerification();
 
   useEffect(() => {
-    setPhoneVerified(riderOtpHook.isAuthenticated);
-  }, [riderOtpHook.isAuthenticated]);
+    if (riderOtpHook.isAuthenticated && riderOtpHook.phoneNumber) {
+      setForm((prev: any) => ({
+        ...prev,
+        phone: riderOtpHook.phoneNumber,
+      }));
+    }
+  }, [riderOtpHook.isAuthenticated, riderOtpHook.phoneNumber]);
 
   const submit = async () => {
     const data = new FormData();
@@ -66,16 +69,16 @@ const BecomeRider = () => {
       }
     });
 
-    await api.post("/riders/applications", data, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    console.log(JSON.stringify(data))
+
+    await api.post("/riders/applications", data);
 
     setStep(4);
   };
 
   return (
     <KeyboardAvoidingView>
-      <ScrollView contentContainerStyle={{ padding: 20 }}>
+      <ScrollView contentContainerStyle={{ backgroundColor: "white", padding: 20, borderRadius: 10 }}>
         <StepIndicator step={step} />
 
         {step === 1 && (
@@ -84,7 +87,7 @@ const BecomeRider = () => {
               form={form}
               setForm={setForm}
             />
-            <OtpBox otpHook={riderOtpHook} />
+            {!riderOtpHook.isAuthenticated && <OtpBox otpHook={riderOtpHook} />}
           </>
         )}
 
@@ -106,7 +109,7 @@ const BecomeRider = () => {
               <MyButton
                 title="Next"
                 onPress={() => setStep(step + 1)}
-                disabled={step === 1 && !phoneVerified}
+                disabled={step === 1 && !riderOtpHook.isAuthenticated}
                 backgroundColor='#8EC6A3'
               />
             )}

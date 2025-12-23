@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import { View } from "react-native";
 import { useRouter } from "expo-router"
@@ -17,3 +18,4 @@ const Index = () => {
 }
 
 export default Index
+

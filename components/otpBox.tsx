@@ -47,6 +47,7 @@ const OtpBox = ({ otpHook }: OtpBoxProps) => {
             marginRight: 8,
           }}
           placeholder="10-digit number"
+          placeholderTextColor="#ccc"
           keyboardType="number-pad"
           value={phoneNumber}
           maxLength={10}
@@ -110,7 +111,7 @@ const OtpBox = ({ otpHook }: OtpBoxProps) => {
       {/* OTP input */}
       {otpSent && (
         <View style={{ marginTop: 14 }}>
-          <Text style={{ marginBottom: 6 }}>Enter OTP</Text>
+          <Text style={{ marginBottom: 6, color: "#ccc" }}>Enter OTP</Text>
 
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <TextInput
@@ -123,6 +124,7 @@ const OtpBox = ({ otpHook }: OtpBoxProps) => {
                 marginRight: 8,
               }}
               placeholder="6-digit OTP"
+              placeholderTextColor="#ccc"
               keyboardType="number-pad"
               value={otp}
               maxLength={6}

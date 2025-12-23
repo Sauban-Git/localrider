@@ -1,13 +1,13 @@
 import AnimatedBackground from "@/components/animatedBackground";
 import Login from "@/components/login";
-import { View, Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const RiderLogin = () => {
   return (
-    <View style={{ flex: 1, justifyContent: "center", padding: 20 }}>
+    <SafeAreaView style={{ flex: 1, justifyContent: "center", padding: 20, backgroundColor: "#999" }}>
       <AnimatedBackground />
       <Login />
-    </View>
+    </SafeAreaView>
   )
 }
 

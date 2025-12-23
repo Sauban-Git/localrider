@@ -1,7 +1,7 @@
 
 import * as SecureStore from "expo-secure-store";
 import { useEffect, useState } from "react";
-import api from "../services/api";
+import api from "@/services/api";
 import Toast from "react-native-toast-message";
 import { ToastAndroid } from "react-native";
 
@@ -11,7 +11,7 @@ export default function useOtpVerification() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [otp, setOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
-  const [statusPassed, setStatusPassed] = useState<"not_registered" | "verified" | "not_verified" | null>(null)
+  const [statusPassed, setStatusPassed] = useState<"verified" | "pending" | "rejected" | "not_registered" | null>(null)
 
   const [isChekingStatus, setIsCheckingStatus] = useState(false);
   const [isSendingOtp, setIsSendingOtp] = useState(false);
@@ -37,7 +37,7 @@ export default function useOtpVerification() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [otpCooldown]);
+  }, []);
 
   useEffect(() => {
     const loadAuthState = async () => {
@@ -151,15 +151,14 @@ export default function useOtpVerification() {
       const res = await api.post("/riders/check-status", { phoneNumber });
 
       if (res.data?.success) {
-        if (res.data.status === 'verified') {
-          setOtpFeedback({ type: "success", message: res.data.message });
-          setStatusPassed("verified")
-        } else if (res.data.status === 'not_registered') {
+        if (res.data.status === 'not_registered') {
           setStatusPassed("not_registered")
           setOtpFeedback({ type: "error", message: res.data.message })
         } else {
-          setStatusPassed("not_verified")
+          setStatusPassed((res.data.status === "rejected") ? "rejected" : (res.data.status === "pending") ? "pending" : "verified")
           setOtpFeedback({ type: "info", message: res.data.message })
+          setIsCheckingStatus(false)
+          handleSendOtp()
         }
       } else {
         setOtpFeedback({
@@ -176,40 +175,6 @@ export default function useOtpVerification() {
       setIsCheckingStatus(false);
     }
 
-    if (statusPassed !== "verified") return
-
-    setIsSendingOtp(true);
-    setOtpFeedback(null);
-
-    try {
-      const res = await api.post("/riders/send-otp", { phoneNumber });
-
-      if (res.data?.success) {
-        Toast.show({
-          type: "success",
-          text1: "Development build otp ...",
-          text2: res.data.devOtp,
-          position: "top",
-          visibilityTime: 6000
-        })
-        setOtpSent(true);
-        setOtpSendCount((v) => v + 1);
-        setOtpCooldown(45);
-        setOtpFeedback({ type: "success", message: "OTP sent successfully." });
-      } else {
-        setOtpFeedback({
-          type: "error",
-          message: res.data?.message || "Could not send OTP.",
-        });
-      }
-    } catch (err: any) {
-      setOtpFeedback({
-        type: "error",
-        message: err?.response?.data?.message || "Failed to send OTP.",
-      });
-    } finally {
-      setIsSendingOtp(false);
-    }
   };
 
   // ---------------------------
@@ -252,9 +217,11 @@ export default function useOtpVerification() {
 
 
         // Persist token, refresh token, and maybe rider info
-        await SecureStore.setItemAsync("token", res.data.token);
-        await SecureStore.setItemAsync("refreshToken", res.data.refreshToken);
-        await SecureStore.setItemAsync("rider", JSON.stringify(res.data.rider));
+        if (res.data.token) {
+          await SecureStore.setItemAsync("token", res.data.token);
+        } else if (res.data.refresh) {
+          await SecureStore.setItemAsync("refreshToken", res.data.refresh);
+        }
         await SecureStore.setItemAsync("phoneVerified", "true"); // optional flag
       } else {
         setOtpFeedback({
@@ -263,6 +230,7 @@ export default function useOtpVerification() {
         });
       }
     } catch (err: any) {
+      console.log(err)
       setOtpFeedback({
         type: "error",
         message: err?.response?.data?.message || "OTP verification failed.",
@@ -292,3 +260,4 @@ export default function useOtpVerification() {
     statusPassed,
   };
 }
+
