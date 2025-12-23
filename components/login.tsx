@@ -14,17 +14,14 @@ const Login = () => {
 
   const getInfo = async () => {
     try {
-
-      console.log("gettinf info")
       const res = await api.get("/riders/me")
-      console.log(res.data)
       if (res.data.driver) {
         const { id, name, phone, vehicle_type, avatarUrl } = res.data.driver
         console.log(otpHook.statusPassed)
         setRiderInfo({ id, name, phone, vehicle_type, avatarUrl, status: otpHook.statusPassed })
         router.replace("/(pages)/profile")
       } else {
-        console.log("didnt success getttinf info")
+        console.log("didnt success gettting info")
       }
     } catch {
       console.log("Error while api..")
