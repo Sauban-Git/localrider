@@ -4,27 +4,32 @@ import MyButton from "@/components/button";
 import { useRouter } from "expo-router";
 import api from "@/services/api";
 import { useRiderInfoStore } from "@/stores/ridersInfoStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import LoadingOverlay from "./loadingOverlay";
 
 const Login = () => {
 
   const otpHook = useOtpVerification();
   const router = useRouter()
   const setRiderInfo = useRiderInfoStore((state) => state.setRiderInfo)
+  const [loading, setLoading] = useState(false)
 
   const getInfo = async () => {
+    setLoading(true)
     try {
       const res = await api.get("/riders/me")
       if (res.data.driver) {
         const { id, name, phone, vehicle_type, avatarUrl } = res.data.driver
         console.log(otpHook.statusPassed)
         setRiderInfo({ id, name, phone, vehicle_type, avatarUrl, status: otpHook.statusPassed })
-        router.replace("/(pages)/profile")
+        router.replace('/(pages)/home')
       } else {
         console.log("didnt success gettting info")
       }
     } catch {
       console.log("Error while api..")
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -32,7 +37,7 @@ const Login = () => {
     getInfo()
   }, [otpHook.isAuthenticated])
 
-  return (
+  return (loading ? <LoadingOverlay /> : (
     <View style={{ backgroundColor: "white", justifyContent: "center", padding: 30, borderRadius: 10 }}>
       <View style={{ backgroundColor: "white", justifyContent: "center", alignContent: "center", alignItems: "center", padding: 20 }}>
         <Image source={require("@/assets/images/full_logo.png")} resizeMode="contain" style={{ width: 200, height: 50 }} />
@@ -169,7 +174,7 @@ const Login = () => {
         </View>
       )}
     </View>
-  )
+  ))
 }
 
 export default Login

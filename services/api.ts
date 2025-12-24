@@ -41,7 +41,7 @@ api.interceptors.request.use(async (config) => {
       "/bookings/book",
       "/riders/check-status",
       "/riders/send-otp",
-      "riders/verify-otp"
+      "/riders/verify-otp"
     ];
 
     const isPublicEndpoint = publicEndpoints.some((endpoint) =>

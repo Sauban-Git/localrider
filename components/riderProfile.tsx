@@ -24,7 +24,7 @@ const RiderProfile = () => {
       const res = await api.get("/riders/history")
       console.log("hist: ", res.data)
       if (res.data.rides) {
-        setRidingHistory(res.data.rides)
+        setRidingHistory(placeboHistory)
       }
     } catch (error) {
       console.log(error)
