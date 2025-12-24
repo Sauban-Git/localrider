@@ -12,11 +12,8 @@ import {
   Switch,
   TouchableOpacity,
   ActivityIndicator,
-  Dimensions,
 } from "react-native"
 import { reqRides } from "@/utils/placebo"
-
-const { width } = Dimensions.get("window")
 
 const Home = () => {
 
@@ -36,9 +33,9 @@ const Home = () => {
     extrapolate: "clamp",
   })
 
-  const shrinkHeight = scrollY.interpolate({
+  const collapseTranslateY = scrollY.interpolate({
     inputRange: [0, 120],
-    outputRange: [180, 0], // Original card height 180 → collapses
+    outputRange: [0, -140], // moves up instead of shrinking
     extrapolate: "clamp",
   })
 
@@ -101,6 +98,7 @@ const Home = () => {
       </View>
 
       <Animated.ScrollView
+        style={{ flexGrow: 0 }}
         contentContainerStyle={{ paddingTop: 120 }}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -120,8 +118,7 @@ const Home = () => {
             styles.card,
             {
               opacity: fadeOut,
-              height: shrinkHeight,
-              overflow: "hidden",
+              transform: [{ translateY: collapseTranslateY }],
             },
           ]}
         >
@@ -134,12 +131,12 @@ const Home = () => {
 
           {/* Map Placeholder */}
           <View style={styles.mapPlaceholder}>
-            <Text style={{ color: "#999" }}>Map preview</Text>
+            <Text style={{ color: "#999" }}>Map preview </Text>
           </View>
         </Animated.View>
 
         {/* NOTE: Recent ride requests */}
-        <View style={[styles.card, { marginBottom: 30 }]}>
+        <View style={styles.card}>
           <Text style={styles.sectionTitle}>Nearby Ride Requests</Text>
 
           {/* Skeleton */}
@@ -168,7 +165,7 @@ const Home = () => {
                 <View style={styles.locationRow}>
                   <Text style={styles.icon}>📍</Text>
                   <Text style={styles.rideText}>{rh.pickup}</Text>
-                  <Text style={styles.icon}> {"--->"} </Text>
+                  <Text style={styles.icon}> {"→"} </Text>
                   <Text style={styles.icon}>🏁</Text>
                   <Text style={styles.rideText}>{rh.dropoff}</Text>
                 </View>
