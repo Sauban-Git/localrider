@@ -35,7 +35,7 @@ const Home = () => {
 
   const collapseTranslateY = scrollY.interpolate({
     inputRange: [0, 120],
-    outputRange: [0, -140], // moves up instead of shrinking
+    outputRange: [0, -140],
     extrapolate: "clamp",
   })
 
@@ -82,7 +82,7 @@ const Home = () => {
   }
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={styles.safe} edges={['top']}>
 
       {/* AVAILABILITY */}
       <View style={{ position: "absolute", top: insets.top, left: 0, right: 0, zIndex: 10 }}>
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
 
   card: {
     backgroundColor: "#FFF",
-    borderRadius: 24,
+    borderRadius: 10,
     padding: 20,
     marginHorizontal: 16,
     marginTop: 16,

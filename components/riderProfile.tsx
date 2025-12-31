@@ -69,7 +69,7 @@ const RiderProfile = () => {
       {/* Ride History */}
       {/* NOTE: Status indicator if application is pending or rejected */}
       {(rider.status === "verified" || rider.status === null) ?
-        <View style={[styles.card, { flex: 1 }]}>
+        <View style={[styles.card, { flex: 1, marginTop: 20 }]}>
           <Text style={styles.sectionTitle}>Ride History</Text>
 
           <ScrollView style={{ flex: 1, paddingBottom: 20 }}>
@@ -109,8 +109,6 @@ const RiderProfile = () => {
         </View>
       }
 
-
-
     </View>
   );
 };
@@ -128,7 +126,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 20,
     padding: 20,
-    marginBottom: 20,
     elevation: 2,
   },
   center: {
